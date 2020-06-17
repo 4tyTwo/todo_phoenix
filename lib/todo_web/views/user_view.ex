@@ -13,6 +13,10 @@ defmodule TodoWeb.UserView do
   def render("user.json", %{user: user}) do
     %{id: user.id,
       username: user.username,
-      hashed_password: user.hashed_password}
+      password_hash: user.password_hash}
+  end
+
+  def render("jwt.json", %{jwt: jwt}) do
+    %{jwt: jwt}
   end
 end
