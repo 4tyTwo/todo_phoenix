@@ -7,6 +7,7 @@ defmodule Todo.Accounts do
   alias Todo.Repo
 
   alias Todo.Accounts.User
+  alias Todo.Accounts.Token
   alias Todo.Guardian
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
 
@@ -41,6 +42,8 @@ defmodule Todo.Accounts do
 
   def get_user(id), do: Repo.get(User, id)
 
+  def get_token(user_id), do: Repo.get_by(Token, user_id: user_id)
+
   @doc """
   Creates a user.
 
@@ -54,8 +57,18 @@ defmodule Todo.Accounts do
 
   """
   def create_user(attrs \\ %{}) do
-    %User{}
+    {:ok, user} = res = %User{}
     |> User.changeset(attrs)
+    |> Repo.insert()
+    create_token(user)
+    res
+  end
+
+  def create_token(user) do
+    {:ok, token, _claims} = Guardian.encode_and_sign(user)
+    %Token{}
+    |> Token.changeset(%{token: token})
+    |> Ecto.Changeset.put_assoc(:user, user)
     |> Repo.insert()
   end
 
@@ -109,9 +122,19 @@ defmodule Todo.Accounts do
   def token_sign_in(username, password) do
     case username_password_auth(username, password) do
       {:ok, user} ->
-        Guardian.encode_and_sign(user)
+        case get_token(user.id) do
+          nil -> {:error, :unauthorized}
+          token -> maybe_reissue_token(user, token)
+        end
       _ ->
         {:error, :unauthorized}
+    end
+  end
+
+  defp maybe_reissue_token(%User{} = user, %Token{token: token} = t) do
+    case Guardian.decode_and_verify(token) do
+      {:error, _} -> create_token(user) # TODO: match only on expiration error
+      {:ok, _} -> {:ok, t}
     end
   end
 

@@ -41,8 +41,4 @@ defmodule Todo.UserContent do
   def delete_todolist(_, _) do
     {:error, :not_found}
   end
-
-  def change_todolist(%Todolist{} = todolist) do
-    Todolist.changeset(todolist, %{})
-  end
 end

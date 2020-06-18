@@ -5,6 +5,7 @@ defmodule Todo.Accounts.User do
   schema "users" do
     field :password_hash, :string
     field :username, :string
+    has_one :token, Todo.Accounts.Token
 
     field :password, :string, virtual: true
 

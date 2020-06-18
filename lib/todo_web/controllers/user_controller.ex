@@ -3,22 +3,22 @@ defmodule TodoWeb.UserController do
 
   alias Todo.Accounts
   alias Todo.Accounts.User
+  alias Todo.Accounts.Token
   alias Todo.Guardian
 
   action_fallback TodoWeb.FallbackController
 
   def create(conn, %{"user" => user_params}) do
-    with {:ok, %User{} = user} <- Accounts.create_user(user_params),
-         {:ok, token, _claims} <- Guardian.encode_and_sign(user) do
-      conn
-      |> put_status(:created)
-      |> render("jwt.json", jwt: token)
-    end
+    {:ok, %User{} = user} = Accounts.create_user(user_params)
+    %Token{token: token} = Accounts.get_token(user.id)
+    conn
+    |> put_status(:created)
+    |> render("jwt.json", jwt: token)
   end
 
   def sign_in(conn, %{"username" => username, "password" => password}) do
     case Accounts.token_sign_in(username, password) do
-      {:ok, token, _claims} ->
+      {:ok, %Token{token: token}} ->
         render(conn, "jwt.json", jwt: token)
       _ ->
         {:error, :unauthorized}
