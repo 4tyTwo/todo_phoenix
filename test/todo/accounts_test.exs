@@ -6,9 +6,9 @@ defmodule Todo.AccountsTest do
   describe "users" do
     alias Todo.Accounts.User
 
-    @valid_attrs %{hashed_password: "some hashed_password", username: "some username"}
-    @update_attrs %{hashed_password: "some updated hashed_password", username: "some updated username"}
-    @invalid_attrs %{hashed_password: nil, username: nil}
+    @valid_attrs %{password_hash: "some password_hash", username: "some username"}
+    @update_attrs %{password_hash: "some updated password_hash", username: "some updated username"}
+    @invalid_attrs %{password_hash: nil, username: nil}
 
     def user_fixture(attrs \\ %{}) do
       {:ok, user} =
@@ -31,7 +31,7 @@ defmodule Todo.AccountsTest do
 
     test "create_user/1 with valid data creates a user" do
       assert {:ok, %User{} = user} = Accounts.create_user(@valid_attrs)
-      assert user.hashed_password == "some hashed_password"
+      assert user.password_hash == "some password_hash"
       assert user.username == "some username"
     end
 
@@ -42,7 +42,7 @@ defmodule Todo.AccountsTest do
     test "update_user/2 with valid data updates the user" do
       user = user_fixture()
       assert {:ok, %User{} = user} = Accounts.update_user(user, @update_attrs)
-      assert user.hashed_password == "some updated hashed_password"
+      assert user.password_hash == "some updated password_hash"
       assert user.username == "some updated username"
     end
 

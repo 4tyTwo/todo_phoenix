@@ -6,4 +6,5 @@ defmodule Todo.Guardian.AuthPipeline do
   plug Guardian.Plug.VerifyHeader, realm: "Bearer"
   plug Guardian.Plug.EnsureAuthenticated
   plug Guardian.Plug.LoadResource
+  plug TodoWeb.Plug.CurrentUser
 end

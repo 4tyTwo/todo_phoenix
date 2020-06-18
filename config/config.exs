@@ -22,6 +22,10 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+config :todo, Todo.Guardian,
+       issuer: "todo",
+       secret_key: "0cv7KJ8+sVZ5mn3O+TI7TWb+q9RHGP+RAOhkZHAZGOnSLJjMD8KBvqlVIFtnSjy7"
+
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 

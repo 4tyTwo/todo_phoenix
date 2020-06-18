@@ -5,14 +5,14 @@ defmodule TodoWeb.UserControllerTest do
   alias Todo.Accounts.User
 
   @create_attrs %{
-    hashed_password: "some hashed_password",
+    password_hash: "some password_hash",
     username: "some username"
   }
   @update_attrs %{
-    hashed_password: "some updated hashed_password",
+    password_hash: "some updated password_hash",
     username: "some updated username"
   }
-  @invalid_attrs %{hashed_password: nil, username: nil}
+  @invalid_attrs %{password_hash: nil, username: nil}
 
   def fixture(:user) do
     {:ok, user} = Accounts.create_user(@create_attrs)
@@ -39,7 +39,7 @@ defmodule TodoWeb.UserControllerTest do
 
       assert %{
                "id" => id,
-               "hashed_password" => "some hashed_password",
+               "password_hash" => "some password_hash",
                "username" => "some username"
              } = json_response(conn, 200)["data"]
     end
@@ -61,7 +61,7 @@ defmodule TodoWeb.UserControllerTest do
 
       assert %{
                "id" => id,
-               "hashed_password" => "some updated hashed_password",
+               "password_hash" => "some updated password_hash",
                "username" => "some updated username"
              } = json_response(conn, 200)["data"]
     end
