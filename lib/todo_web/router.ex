@@ -20,6 +20,6 @@ defmodule TodoWeb.Router do
     pipe_through [:api, :jwt_authenticated]
 
     get "/my_user", UserController, :show
-    resources "/todolists", TodolistController
+    resources "/todolists", TodolistController, except: [:edit]
   end
 end
